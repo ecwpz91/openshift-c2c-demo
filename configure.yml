@@ -1,1 +1,18 @@
 ---
+
+- name: Setup & config localhost
+  connection: local
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vars/liveuser.yml
+  pre_tasks:
+    - name: Verify Ansible Version
+      assert:
+        that:
+          - "ansible_version.major == 2"
+          - "ansible_version.minor == 4"
+        msg: "This script is only supported with the 2.4 version of Ansible"
+  # tasks:
+  #     - import_role: container_runtime
+  #       tasks_from: registry_auth.yml
