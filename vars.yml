@@ -1,0 +1,10 @@
+openshift_url:
+openshift_username:
+openshift_password:
+openshift_project: cicdcc
+
+github_repository: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+
+quay_url:
+quay_username:
+quay_password:
