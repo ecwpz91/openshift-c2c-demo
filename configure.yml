@@ -1,6 +1,6 @@
 ---
 
-- name: Setup & config localhost
+- name: Setup & configure
   connection: local
   gather_facts: no
   hosts: localhost
