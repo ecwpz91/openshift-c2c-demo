@@ -1,0 +1,593 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: cross-cluster-s2i
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: phpmysqldemo
+    name: phpmysqldemo
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: phpmysqldemo:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        uri: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: php:7.0
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: V3HdktQ3iDd8kjdqQdTn
+      type: GitHub
+    - generic:
+        secret: bAsq8IcXTVmWDOn81vAP
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: Build
+  metadata:
+    annotations:
+      openshift.io/build-config.name: phpmysqldemo
+      openshift.io/build.number: "1"
+      openshift.io/build.pod-name: phpmysqldemo-1-build
+    creationTimestamp: null
+    labels:
+      app: phpmysqldemo
+      buildconfig: phpmysqldemo
+      openshift.io/build-config.name: phpmysqldemo
+      openshift.io/build.start-policy: Serial
+    name: phpmysqldemo-1
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: BuildConfig
+      name: phpmysqldemo
+      uid: d2dea2ac-4412-11e8-ad15-127460331a38
+  spec:
+    nodeSelector: null
+    output:
+      pushSecret:
+        name: builder-dockercfg-4dttj
+      to:
+        kind: ImageStreamTag
+        name: phpmysqldemo:latest
+    postCommit: {}
+    resources: {}
+    revision:
+      git:
+        author:
+          email: rlucente@redhat.com
+          name: rlucente
+        commit: 11dee437c71a4194f9a8217c5f06a9759a3f14a9
+        committer:
+          email: rlucente@redhat.com
+          name: rlucente
+        message: update demo
+      type: Git
+    serviceAccount: builder
+    source:
+      git:
+        uri: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1
+      type: Source
+    triggeredBy:
+    - imageChangeBuild:
+        fromRef:
+          kind: ImageStreamTag
+          name: php:7.0
+          namespace: openshift
+        imageID: registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1
+      message: Image change
+  status:
+    config:
+      name: phpmysqldemo
+    output:
+      to:
+        imageDigest: sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f
+    outputDockerImageReference: docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest
+    phase: New
+    stages:
+    - durationMilliseconds: 1823
+      name: FetchInputs
+      startTime: 2018-04-19T20:48:03Z
+      steps:
+      - durationMilliseconds: 1823
+        name: FetchGitSource
+        startTime: 2018-04-19T20:48:03Z
+    - durationMilliseconds: 2968
+      name: CommitContainer
+      startTime: 2018-04-19T20:48:11Z
+      steps:
+      - durationMilliseconds: 2968
+        name: CommitContainer
+        startTime: 2018-04-19T20:48:11Z
+    - durationMilliseconds: 4203
+      name: Assemble
+      startTime: 2018-04-19T20:48:09Z
+      steps:
+      - durationMilliseconds: 4203
+        name: AssembleBuildScripts
+        startTime: 2018-04-19T20:48:09Z
+    - durationMilliseconds: 484
+      name: PushImage
+      startTime: 2018-04-19T20:48:14Z
+      steps:
+      - durationMilliseconds: 484
+        name: PushImage
+        startTime: 2018-04-19T20:48:14Z
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: phpmysqldemo
+    name: phpmysqldemo
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: phpmysqldemo
+    name: phpmysqldemo
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: phpmysqldemo
+      deploymentconfig: phpmysqldemo
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: phpmysqldemo
+          deploymentconfig: phpmysqldemo
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/cicdcc/phpmysqldemo@sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f
+          imagePullPolicy: Always
+          name: phpmysqldemo
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - phpmysqldemo
+        from:
+          kind: ImageStreamTag
+          name: phpmysqldemo:latest
+          namespace: cicdcc
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: phpmysqldemo
+    name: phpmysqldemo
+  spec:
+    host: phpmysqldemo-cicdcc.apps.example.com
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: phpmysqldemo
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-04-19T20:47:40Z
+        status: "True"
+        type: Admitted
+      host: phpmysqldemo-cicdcc.apps.example.com
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      openshift.io/build.name: phpmysqldemo-1
+      openshift.io/scc: privileged
+      pod.alpha.kubernetes.io/init-containers: '[{"name":"git-clone","image":"openshift3/ose-sti-builder:v3.7.42","command":["openshift-git-clone"],"args":["--loglevel=0"],"env":[{"name":"BUILD","value":"{\"kind\":\"Build\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"phpmysqldemo-1\",\"namespace\":\"cicdcc\",\"selfLink\":\"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1\",\"uid\":\"d2e29c9d-4412-11e8-ad15-127460331a38\",\"resourceVersion\":\"2898025\",\"creationTimestamp\":\"2018-04-19T20:47:07Z\",\"labels\":{\"app\":\"phpmysqldemo\",\"buildconfig\":\"phpmysqldemo\",\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.start-policy\":\"Serial\"},\"annotations\":{\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.number\":\"1\"},\"ownerReferences\":[{\"apiVersion\":\"build.openshift.io/v1\",\"kind\":\"BuildConfig\",\"name\":\"phpmysqldemo\",\"uid\":\"d2dea2ac-4412-11e8-ad15-127460331a38\",\"controller\":true}]},\"spec\":{\"serviceAccount\":\"builder\",\"source\":{\"type\":\"Git\",\"git\":{\"uri\":\"https://github.com/rlucente-se-jboss/phpmysqldemo.git\"}},\"strategy\":{\"type\":\"Source\",\"sourceStrategy\":{\"from\":{\"kind\":\"DockerImage\",\"name\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\"}}},\"output\":{\"to\":{\"kind\":\"DockerImage\",\"name\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\"},\"pushSecret\":{\"name\":\"builder-dockercfg-4dttj\"}},\"resources\":{},\"postCommit\":{},\"nodeSelector\":null,\"triggeredBy\":[{\"message\":\"Image
+        change\",\"imageChangeBuild\":{\"imageID\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\",\"fromRef\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"php:7.0\"}}}]},\"status\":{\"phase\":\"New\",\"outputDockerImageReference\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\",\"config\":{\"kind\":\"BuildConfig\",\"namespace\":\"cicdcc\",\"name\":\"phpmysqldemo\"},\"output\":{}}}\n"},{"name":"SOURCE_REPOSITORY","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"SOURCE_URI","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"ORIGIN_VERSION","value":"v3.7.42"},{"name":"ALLOWED_UIDS","value":"1-"},{"name":"DROP_CAPS","value":"KILL,MKNOD,SETGID,SETUID"}],"resources":{},"volumeMounts":[{"name":"buildworkdir","mountPath":"/tmp/build"},{"name":"builder-token-ds4ll","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"FallbackToLogsOnError","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}},{"name":"manage-dockerfile","image":"openshift3/ose-sti-builder:v3.7.42","command":["openshift-manage-dockerfile"],"args":["--loglevel=0"],"env":[{"name":"BUILD","value":"{\"kind\":\"Build\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"phpmysqldemo-1\",\"namespace\":\"cicdcc\",\"selfLink\":\"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1\",\"uid\":\"d2e29c9d-4412-11e8-ad15-127460331a38\",\"resourceVersion\":\"2898025\",\"creationTimestamp\":\"2018-04-19T20:47:07Z\",\"labels\":{\"app\":\"phpmysqldemo\",\"buildconfig\":\"phpmysqldemo\",\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.start-policy\":\"Serial\"},\"annotations\":{\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.number\":\"1\"},\"ownerReferences\":[{\"apiVersion\":\"build.openshift.io/v1\",\"kind\":\"BuildConfig\",\"name\":\"phpmysqldemo\",\"uid\":\"d2dea2ac-4412-11e8-ad15-127460331a38\",\"controller\":true}]},\"spec\":{\"serviceAccount\":\"builder\",\"source\":{\"type\":\"Git\",\"git\":{\"uri\":\"https://github.com/rlucente-se-jboss/phpmysqldemo.git\"}},\"strategy\":{\"type\":\"Source\",\"sourceStrategy\":{\"from\":{\"kind\":\"DockerImage\",\"name\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\"}}},\"output\":{\"to\":{\"kind\":\"DockerImage\",\"name\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\"},\"pushSecret\":{\"name\":\"builder-dockercfg-4dttj\"}},\"resources\":{},\"postCommit\":{},\"nodeSelector\":null,\"triggeredBy\":[{\"message\":\"Image
+        change\",\"imageChangeBuild\":{\"imageID\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\",\"fromRef\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"php:7.0\"}}}]},\"status\":{\"phase\":\"New\",\"outputDockerImageReference\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\",\"config\":{\"kind\":\"BuildConfig\",\"namespace\":\"cicdcc\",\"name\":\"phpmysqldemo\"},\"output\":{}}}\n"},{"name":"SOURCE_REPOSITORY","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"SOURCE_URI","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"ORIGIN_VERSION","value":"v3.7.42"},{"name":"ALLOWED_UIDS","value":"1-"},{"name":"DROP_CAPS","value":"KILL,MKNOD,SETGID,SETUID"}],"resources":{},"volumeMounts":[{"name":"buildworkdir","mountPath":"/tmp/build"},{"name":"builder-token-ds4ll","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"FallbackToLogsOnError","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}]'
+      pod.beta.kubernetes.io/init-containers: '[{"name":"git-clone","image":"openshift3/ose-sti-builder:v3.7.42","command":["openshift-git-clone"],"args":["--loglevel=0"],"env":[{"name":"BUILD","value":"{\"kind\":\"Build\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"phpmysqldemo-1\",\"namespace\":\"cicdcc\",\"selfLink\":\"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1\",\"uid\":\"d2e29c9d-4412-11e8-ad15-127460331a38\",\"resourceVersion\":\"2898025\",\"creationTimestamp\":\"2018-04-19T20:47:07Z\",\"labels\":{\"app\":\"phpmysqldemo\",\"buildconfig\":\"phpmysqldemo\",\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.start-policy\":\"Serial\"},\"annotations\":{\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.number\":\"1\"},\"ownerReferences\":[{\"apiVersion\":\"build.openshift.io/v1\",\"kind\":\"BuildConfig\",\"name\":\"phpmysqldemo\",\"uid\":\"d2dea2ac-4412-11e8-ad15-127460331a38\",\"controller\":true}]},\"spec\":{\"serviceAccount\":\"builder\",\"source\":{\"type\":\"Git\",\"git\":{\"uri\":\"https://github.com/rlucente-se-jboss/phpmysqldemo.git\"}},\"strategy\":{\"type\":\"Source\",\"sourceStrategy\":{\"from\":{\"kind\":\"DockerImage\",\"name\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\"}}},\"output\":{\"to\":{\"kind\":\"DockerImage\",\"name\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\"},\"pushSecret\":{\"name\":\"builder-dockercfg-4dttj\"}},\"resources\":{},\"postCommit\":{},\"nodeSelector\":null,\"triggeredBy\":[{\"message\":\"Image
+        change\",\"imageChangeBuild\":{\"imageID\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\",\"fromRef\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"php:7.0\"}}}]},\"status\":{\"phase\":\"New\",\"outputDockerImageReference\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\",\"config\":{\"kind\":\"BuildConfig\",\"namespace\":\"cicdcc\",\"name\":\"phpmysqldemo\"},\"output\":{}}}\n"},{"name":"SOURCE_REPOSITORY","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"SOURCE_URI","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"ORIGIN_VERSION","value":"v3.7.42"},{"name":"ALLOWED_UIDS","value":"1-"},{"name":"DROP_CAPS","value":"KILL,MKNOD,SETGID,SETUID"}],"resources":{},"volumeMounts":[{"name":"buildworkdir","mountPath":"/tmp/build"},{"name":"builder-token-ds4ll","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"FallbackToLogsOnError","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}},{"name":"manage-dockerfile","image":"openshift3/ose-sti-builder:v3.7.42","command":["openshift-manage-dockerfile"],"args":["--loglevel=0"],"env":[{"name":"BUILD","value":"{\"kind\":\"Build\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"phpmysqldemo-1\",\"namespace\":\"cicdcc\",\"selfLink\":\"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1\",\"uid\":\"d2e29c9d-4412-11e8-ad15-127460331a38\",\"resourceVersion\":\"2898025\",\"creationTimestamp\":\"2018-04-19T20:47:07Z\",\"labels\":{\"app\":\"phpmysqldemo\",\"buildconfig\":\"phpmysqldemo\",\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.start-policy\":\"Serial\"},\"annotations\":{\"openshift.io/build-config.name\":\"phpmysqldemo\",\"openshift.io/build.number\":\"1\"},\"ownerReferences\":[{\"apiVersion\":\"build.openshift.io/v1\",\"kind\":\"BuildConfig\",\"name\":\"phpmysqldemo\",\"uid\":\"d2dea2ac-4412-11e8-ad15-127460331a38\",\"controller\":true}]},\"spec\":{\"serviceAccount\":\"builder\",\"source\":{\"type\":\"Git\",\"git\":{\"uri\":\"https://github.com/rlucente-se-jboss/phpmysqldemo.git\"}},\"strategy\":{\"type\":\"Source\",\"sourceStrategy\":{\"from\":{\"kind\":\"DockerImage\",\"name\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\"}}},\"output\":{\"to\":{\"kind\":\"DockerImage\",\"name\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\"},\"pushSecret\":{\"name\":\"builder-dockercfg-4dttj\"}},\"resources\":{},\"postCommit\":{},\"nodeSelector\":null,\"triggeredBy\":[{\"message\":\"Image
+        change\",\"imageChangeBuild\":{\"imageID\":\"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1\",\"fromRef\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"php:7.0\"}}}]},\"status\":{\"phase\":\"New\",\"outputDockerImageReference\":\"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest\",\"config\":{\"kind\":\"BuildConfig\",\"namespace\":\"cicdcc\",\"name\":\"phpmysqldemo\"},\"output\":{}}}\n"},{"name":"SOURCE_REPOSITORY","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"SOURCE_URI","value":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"},{"name":"ORIGIN_VERSION","value":"v3.7.42"},{"name":"ALLOWED_UIDS","value":"1-"},{"name":"DROP_CAPS","value":"KILL,MKNOD,SETGID,SETUID"}],"resources":{},"volumeMounts":[{"name":"buildworkdir","mountPath":"/tmp/build"},{"name":"builder-token-ds4ll","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"FallbackToLogsOnError","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}]'
+    creationTimestamp: null
+    labels:
+      openshift.io/build.name: phpmysqldemo-1
+    name: phpmysqldemo-1-build
+    ownerReferences:
+    - apiVersion: build.openshift.io/v1
+      controller: true
+      kind: Build
+      name: phpmysqldemo-1
+      uid: d2e29c9d-4412-11e8-ad15-127460331a38
+  spec:
+    containers:
+    - args:
+      - --loglevel=0
+      command:
+      - openshift-sti-build
+      env:
+      - name: BUILD
+        value: |
+          {"kind":"Build","apiVersion":"v1","metadata":{"name":"phpmysqldemo-1","namespace":"cicdcc","selfLink":"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1","uid":"d2e29c9d-4412-11e8-ad15-127460331a38","resourceVersion":"2898025","creationTimestamp":"2018-04-19T20:47:07Z","labels":{"app":"phpmysqldemo","buildconfig":"phpmysqldemo","openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"phpmysqldemo","uid":"d2dea2ac-4412-11e8-ad15-127460331a38","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest"},"pushSecret":{"name":"builder-dockercfg-4dttj"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.0"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest","config":{"kind":"BuildConfig","namespace":"cicdcc","name":"phpmysqldemo"},"output":{}}}
+      - name: SOURCE_REPOSITORY
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: SOURCE_URI
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: ORIGIN_VERSION
+        value: v3.7.42
+      - name: ALLOWED_UIDS
+        value: 1-
+      - name: DROP_CAPS
+        value: KILL,MKNOD,SETGID,SETUID
+      - name: PUSH_DOCKERCFG_PATH
+        value: /var/run/secrets/openshift.io/push
+      image: openshift3/ose-sti-builder:v3.7.42
+      imagePullPolicy: IfNotPresent
+      name: sti-build
+      resources: {}
+      securityContext:
+        privileged: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /tmp/build
+        name: buildworkdir
+      - mountPath: /var/run/docker.sock
+        name: docker-socket
+      - mountPath: /var/run/crio.sock
+        name: crio-socket
+      - mountPath: /var/run/secrets/openshift.io/push
+        name: builder-dockercfg-4dttj-push
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: builder-token-ds4ll
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: builder-dockercfg-4dttj
+    initContainers:
+    - args:
+      - --loglevel=0
+      command:
+      - openshift-git-clone
+      env:
+      - name: BUILD
+        value: |
+          {"kind":"Build","apiVersion":"v1","metadata":{"name":"phpmysqldemo-1","namespace":"cicdcc","selfLink":"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1","uid":"d2e29c9d-4412-11e8-ad15-127460331a38","resourceVersion":"2898025","creationTimestamp":"2018-04-19T20:47:07Z","labels":{"app":"phpmysqldemo","buildconfig":"phpmysqldemo","openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"phpmysqldemo","uid":"d2dea2ac-4412-11e8-ad15-127460331a38","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest"},"pushSecret":{"name":"builder-dockercfg-4dttj"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.0"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest","config":{"kind":"BuildConfig","namespace":"cicdcc","name":"phpmysqldemo"},"output":{}}}
+      - name: SOURCE_REPOSITORY
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: SOURCE_URI
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: ORIGIN_VERSION
+        value: v3.7.42
+      - name: ALLOWED_UIDS
+        value: 1-
+      - name: DROP_CAPS
+        value: KILL,MKNOD,SETGID,SETUID
+      image: openshift3/ose-sti-builder:v3.7.42
+      imagePullPolicy: IfNotPresent
+      name: git-clone
+      resources: {}
+      securityContext:
+        privileged: false
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /tmp/build
+        name: buildworkdir
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: builder-token-ds4ll
+        readOnly: true
+    - args:
+      - --loglevel=0
+      command:
+      - openshift-manage-dockerfile
+      env:
+      - name: BUILD
+        value: |
+          {"kind":"Build","apiVersion":"v1","metadata":{"name":"phpmysqldemo-1","namespace":"cicdcc","selfLink":"/apis/build.openshift.io/v1/namespaces/cicdcc/builds/phpmysqldemo-1","uid":"d2e29c9d-4412-11e8-ad15-127460331a38","resourceVersion":"2898025","creationTimestamp":"2018-04-19T20:47:07Z","labels":{"app":"phpmysqldemo","buildconfig":"phpmysqldemo","openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"phpmysqldemo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"phpmysqldemo","uid":"d2dea2ac-4412-11e8-ad15-127460331a38","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/rlucente-se-jboss/phpmysqldemo.git"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest"},"pushSecret":{"name":"builder-dockercfg-4dttj"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-70-rhel7@sha256:bb633e65fd2671f2250c87e987453c8714614e02c579990ae2134e7ec9f42ca1","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.0"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo:latest","config":{"kind":"BuildConfig","namespace":"cicdcc","name":"phpmysqldemo"},"output":{}}}
+      - name: SOURCE_REPOSITORY
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: SOURCE_URI
+        value: https://github.com/rlucente-se-jboss/phpmysqldemo.git
+      - name: ORIGIN_VERSION
+        value: v3.7.42
+      - name: ALLOWED_UIDS
+        value: 1-
+      - name: DROP_CAPS
+        value: KILL,MKNOD,SETGID,SETUID
+      image: openshift3/ose-sti-builder:v3.7.42
+      imagePullPolicy: IfNotPresent
+      name: manage-dockerfile
+      resources: {}
+      securityContext:
+        privileged: false
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: FallbackToLogsOnError
+      volumeMounts:
+      - mountPath: /tmp/build
+        name: buildworkdir
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: builder-token-ds4ll
+        readOnly: true
+    nodeName: ip-10-0-0-92.ec2.internal
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: builder
+    serviceAccountName: builder
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - emptyDir: {}
+      name: buildworkdir
+    - hostPath:
+        path: /var/run/docker.sock
+      name: docker-socket
+    - hostPath:
+        path: /var/run/crio.sock
+      name: crio-socket
+    - name: builder-dockercfg-4dttj-push
+      secret:
+        defaultMode: 384
+        secretName: builder-dockercfg-4dttj
+    - name: builder-token-ds4ll
+      secret:
+        defaultMode: 420
+        secretName: builder-token-ds4ll
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"cicdcc","name":"phpmysqldemo-1","uid":"dbae1201-4412-11e8-ad15-127460331a38","apiVersion":"v1","resourceVersion":"2898123"}}
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: phpmysqldemo
+      openshift.io/deployment.name: phpmysqldemo-1
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: phpmysqldemo-1-
+    labels:
+      app: phpmysqldemo
+      deployment: phpmysqldemo-1
+      deploymentconfig: phpmysqldemo
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: phpmysqldemo-1
+      uid: dbae1201-4412-11e8-ad15-127460331a38
+  spec:
+    containers:
+    - image: docker-registry.default.svc:5000/cicdcc/phpmysqldemo@sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f
+      imagePullPolicy: Always
+      name: phpmysqldemo
+      ports:
+      - containerPort: 8080
+        protocol: TCP
+      - containerPort: 8443
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000370000
+        seLinuxOptions:
+          level: s0:c19,c14
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-ppjcw
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-9k7k6
+    nodeName: ip-10-0-0-92.ec2.internal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000370000
+      seLinuxOptions:
+        level: s0:c19,c14
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - name: default-token-ppjcw
+      secret:
+        defaultMode: 420
+        secretName: default-token-ppjcw
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-04-19 16:47:26 -0400 EDT
+      openshift.io/deployer-pod.created-at: 2018-04-19 16:47:22 -0400 EDT
+      openshift.io/deployer-pod.name: phpmysqldemo-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: phpmysqldemo
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"phpmysqldemo","namespace":"cicdcc","selfLink":"/apis/apps.openshift.io/v1/namespaces/cicdcc/deploymentconfigs/phpmysqldemo","uid":"d2e09fa5-4412-11e8-ad15-127460331a38","resourceVersion":"2898094","generation":2,"creationTimestamp":"2018-04-19T20:47:07Z","labels":{"app":"phpmysqldemo"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["phpmysqldemo"],"from":{"kind":"ImageStreamTag","namespace":"cicdcc","name":"phpmysqldemo:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo@sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f"}}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"phpmysqldemo","deploymentconfig":"phpmysqldemo"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"phpmysqldemo","deploymentconfig":"phpmysqldemo"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"containers":[{"name":"phpmysqldemo","image":"docker-registry.default.svc:5000/cicdcc/phpmysqldemo@sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f","ports":[{"containerPort":8080,"protocol":"TCP"},{"containerPort":8443,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-04-19T20:47:07Z","lastTransitionTime":"2018-04-19T20:47:07Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: phpmysqldemo
+      openshift.io/deployment-config.name: phpmysqldemo
+    name: phpmysqldemo-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: phpmysqldemo
+      uid: d2e09fa5-4412-11e8-ad15-127460331a38
+  spec:
+    replicas: 1
+    selector:
+      app: phpmysqldemo
+      deployment: phpmysqldemo-1
+      deploymentconfig: phpmysqldemo
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: phpmysqldemo
+          openshift.io/deployment.name: phpmysqldemo-1
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: phpmysqldemo
+          deployment: phpmysqldemo-1
+          deploymentconfig: phpmysqldemo
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/cicdcc/phpmysqldemo@sha256:c14983ed0c1601c7b53d6ecd5078419f601c8d0d6ffb8c3b710e39930fb9796f
+          imagePullPolicy: Always
+          name: phpmysqldemo
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: phpmysqldemo
+    name: phpmysqldemo
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    selector:
+      app: phpmysqldemo
+      deploymentconfig: phpmysqldemo
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
