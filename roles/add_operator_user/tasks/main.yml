@@ -1,0 +1,17 @@
+---
+
+- name: Create operator user
+  uri:
+    url: "https://{{ management_route }}/api/providers"
+    body_format: json
+    method: POST
+    user: "{{ management_admin_username | default('admin') }}"
+    password: "{{ management_admin_password | default('smartvm') }}"
+    validate_certs: no
+    # Docs on formatting the BODY of the POST request:
+    # http://manageiq.org/docs/reference/latest/api/reference/users#creating-users
+    body:
+      userid: "{{ management_username | default('changeme')}}"
+      password: "{{ management_password | default('changeme')}}"
+      name: "CFME Operator User"
+      group: { "id" : "2" }

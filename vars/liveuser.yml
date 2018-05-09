@@ -1,11 +1,8 @@
-#####################################################################
-# Variables you should update for your installation
-#####################################################################
-openshift_master_cluster_hostname: "ocplab.com"
-openshift_master_cluster_prefix: ""
-openshift_master_api_port: "8443"
 openshift_cluster_admin_username: ""
 openshift_cluster_admin_password: ""
-openshift_management_username: ""
-openshift_management_password: ""
-openshift_management_project: "openshift-management"
+
+# management_admin_username: "admin"   # default CFME admin username
+# management_admin_password: "smartvm" # default CFME admin password
+
+# management_username: "changeme"  # default CFME username
+# management_password: "changeme"  # default CFME password

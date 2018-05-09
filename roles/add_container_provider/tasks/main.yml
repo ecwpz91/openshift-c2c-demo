@@ -5,8 +5,8 @@
     url: "https://{{ management_route }}/api/providers"
     body_format: json
     method: POST
-    user: "{{ openshift_management_username | default('admin') }}"
-    password: "{{ openshift_management_password | default('smartvm') }}"
+    user: "{{ management_admin_username | default('admin') }}"
+    password: "{{ management_admin_password | default('smartvm') }}"
     validate_certs: no
     # Docs on formatting the BODY of the POST request:
     # http://manageiq.org/docs/reference/latest/api/reference/providers.html#specifying-connection-configurations
