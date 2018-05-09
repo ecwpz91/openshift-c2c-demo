@@ -11,7 +11,7 @@
     # Docs on formatting the BODY of the POST request:
     # http://manageiq.org/docs/reference/latest/api/reference/users#creating-users
     body:
-      userid: "{{ management_username | default('changeme')}}"
-      password: "{{ management_password | default('changeme')}}"
-      name: "CFME Operator User"
-      group: { "id" : "2" }
+      userid: "{{ management_username | default('devops')}}"
+      password: "{{ management_password | default('smartvm')}}"
+      name: "Operator"
+      group: { "id" : "3" }
