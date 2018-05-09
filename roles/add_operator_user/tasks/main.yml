@@ -2,7 +2,7 @@
 
 - name: Create operator user
   uri:
-    url: "https://{{ management_route }}/api/providers"
+    url: "https://{{ management_route }}/api/users"
     body_format: json
     method: POST
     user: "{{ management_admin_username | default('admin') }}"
