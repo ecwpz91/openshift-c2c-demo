@@ -1,0 +1,22 @@
+---
+
+- name: Set test cluster
+  shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ dev_cluster_admin_username }} -p {{ dev_cluster_admin_password }}"
+
+- name: Create the test project
+  shell: "oc new-project product-catalog-test --display-name='Catalog Test'"
+
+- name: Deploy the application into the test environment
+  shell: "oc process -f https://raw.githubusercontent.com/gnunn1/openshift-basic-pipeline/master/openshift/openshift-template-persistent.yml | oc apply -f -"
+
+- name: Create a Jenkins service account that the CI/CD on the development cluster will use
+  shell: "oc create sa jenkins"
+
+- name: Give the Jenkins SA permissions to work with the project
+  shell: "oc policy add-role-to-user edit system:serviceaccount:product-catalog-test:jenkins -n product-catalog-test"
+
+- name: Get the token for the Jenkins service account
+  shell: "oc sa get-token jenkins"
+
+- name: Disable the triggers for the application since we want the pipeline to control the deployment
+  shell: "oc set triggers dc product-catalog --containers='product-catalog' --from-image='product-catalog:latest' --manual=true -n product-catalog-test"

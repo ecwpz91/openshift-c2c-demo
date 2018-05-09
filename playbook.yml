@@ -2,7 +2,7 @@
 
 - name: Setup & configure
   connection: local
-  # gather_facts: no
+  gather_facts: no
   hosts: localhost
 
   vars_files:
@@ -12,6 +12,8 @@
   - define_derived_vars
   - add_container_provider
   - add_operator_user
+  - setup-dev-cluster
+  - setup-test-cluster
 
   pre_tasks:
     - name: Verify Ansible Version

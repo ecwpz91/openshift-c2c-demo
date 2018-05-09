@@ -1,6 +1,6 @@
 ---
 
-  - name: Set ocp cluster
+  - name: Set dev cluster
     shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ dev_cluster_admin_username }} -p {{ dev_cluster_admin_password }}"
 
   - name: Create a CI/CD project
