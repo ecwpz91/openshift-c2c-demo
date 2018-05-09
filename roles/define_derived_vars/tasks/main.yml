@@ -3,10 +3,10 @@
 ---
 - name: Set master dns
   set_fact:
-    public_master_dns: "{{prefix_master_dns}}.{{public_dns_zone}}"
-  when: "prefix_master_dns is defined and prefix_master_dns|length>0"
+    openshift_master_cluster_public_hostname: "{{ openshift_master_cluster_prefix }}.{{ openshift_master_cluster_hostname }}"
+  when: "openshift_master_cluster_hostname is defined and openshift_master_cluster_prefix|length>0"
 
 - name: Set master dns
   set_fact:
-    public_master_dns: "{{public_dns_zone}}"
-  when: "prefix_master_dns is not defined or prefix_master_dns|length==0"
+    openshift_master_cluster_public_hostname: "{{ openshift_master_cluster_hostname }}"
+  when: "openshift_master_cluster_prefix is not defined or openshift_master_cluster_prefix|length==0"

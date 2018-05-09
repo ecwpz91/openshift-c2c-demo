@@ -9,9 +9,6 @@
     - vars/liveuser.yml
 
   roles:
-  - lib_openshift
-  - openshift_facts
-  - lib_utils
   - define_derived_vars
   - add_container_provider
 
@@ -22,6 +19,10 @@
           - "ansible_version.major == 2"
           - "ansible_version.minor >= 4"
         msg: "This script is only supported with the 2.4 version of Ansible"
+
   # tasks:
-  #     - import_role: container_runtime
-  #       tasks_from: registry_auth.yml
+    # - name: Print facts exist result
+    #   debug: var=sa_secret
+
+    # - name: Print facts exist result
+    #   debug: var=management_route
