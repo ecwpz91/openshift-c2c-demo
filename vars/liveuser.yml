@@ -1,20 +1,11 @@
 #####################################################################
 # Variables you should update for your installation
 #####################################################################
-# The public DNS for cluster, you must have a Route 53 zone configured for this
-public_dns_zone: "ocplab.com"
-# Prefix for the master, i.e. if public zone is 'ocplab.com' and the master prefix is 'master'
-# then the OpenShift console will be available at 'master.ocplab.com'. If you leave this as an empty
-# string it will use the public_dns_zone as the A record
-prefix_master_dns: ""
-
-cluster_admin_username: ""
-cluster_admin_password: ""
-
-openshift_project: cicdcc
-
-github_repository: https://github.com/rlucente-se-jboss/phpmysqldemo.git
-
-quay_url:
-quay_username:
-quay_password:
+openshift_master_cluster_hostname: "ocplab.com"
+openshift_master_cluster_prefix: ""
+openshift_master_api_port: "8443"
+openshift_cluster_admin_username: ""
+openshift_cluster_admin_password: ""
+openshift_management_username: ""
+openshift_management_password: ""
+openshift_management_project: "openshift-management"
