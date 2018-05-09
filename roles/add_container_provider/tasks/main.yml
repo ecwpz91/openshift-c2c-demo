@@ -1,42 +1,12 @@
 ---
-- name: Ensure we use openshift_master_cluster_hostname if it is available
-  set_fact:
-    l_cluster_hostname: "{{ openshift_master_cluster_hostname | default(None) }}"
-  when:
-    - openshift_master_cluster_hostname is defined
-
-- name: Ensure we default to the first master if openshift_master_cluster_public_hostname is unavailable
-  set_fact:
-    l_cluster_hostname: "{{ openshift_master_cluster_public_hostname | default(None) }}"
-  when:
-    - l_cluster_hostname is not defined
-
-- name: oc login
-  shell: "oc login {{ l_cluster_hostname }}:{{ openshift_master_api_port }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
-
-- name: Get the management SA Secrets are read
-  shell: "oc sa get-token -n management-infra management-admin | base64 | tr -d '\n'"
-  register: sa_secret
-
-- name: Ensure the SA bearer token value is saved
-  set_fact:
-    management_bearer_token: "{{ sa_secret.stdout }}"
-
-- name: Ensure we have the public route to the management service
-  shell: "oc get route httpd -n {{ openshift_management_project }} --template={% raw %}'{{ .spec.host }}' {% endraw %}"
-  register: route
-
-- name: Ensure the management service route is saved
-  set_fact:
-    management_route: "{{ route.stdout }}"
 
 - name: Ensure this cluster is a container provider
   uri:
     url: "https://{{ management_route }}/api/providers"
     body_format: json
     method: POST
-    user: "{{ openshift_management_username }}"
-    password: "{{ openshift_management_password }}"
+    user: "{{ openshift_management_username | default('admin') }}"
+    password: "{{ openshift_management_password | default('smartvm') }}"
     validate_certs: no
     # Docs on formatting the BODY of the POST request:
     # http://manageiq.org/docs/reference/latest/api/reference/providers.html#specifying-connection-configurations
@@ -44,7 +14,7 @@
       connection_configurations:
         - authentication: {auth_key: "{{ management_bearer_token }}", authtype: bearer, type: AuthToken}
           endpoint: {role: default, security_protocol: ssl-without-validation, verify_ssl: 0}
-      hostname: "{{ l_cluster_hostname }}"
-      name: "{{ openshift_management_project }}"
-      port: "{{ openshift_master_api_port }}"
+      hostname: "{{ openshift_master_cluster_public_hostname }}"
+      name: "{{ openshift_master_cluster_public_hostname | default(None) }}"
+      port: "{{ openshift_master_api_port | default('8443') }}"
       type: "ManageIQ::Providers::Openshift::ContainerManager"
