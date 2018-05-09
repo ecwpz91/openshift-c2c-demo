@@ -1,0 +1,12 @@
+# Sets up common derived variables that get re-used across different plays, putting them
+# here allows them to be managed centrally.
+---
+- name: Set master dns
+  set_fact:
+    public_master_dns: "{{prefix_master_dns}}.{{public_dns_zone}}"
+  when: "prefix_master_dns is defined and prefix_master_dns|length>0"
+
+- name: Set master dns
+  set_fact:
+    public_master_dns: "{{public_dns_zone}}"
+  when: "prefix_master_dns is not defined or prefix_master_dns|length==0"
