@@ -1,6 +1,6 @@
 ---
 
-- name: Provision simpledemo
+- name: Configure/setup
   connection: local
   gather_facts: no
   hosts: localhost
@@ -9,7 +9,9 @@
     - vars/liveuser.yml
 
   roles:
-  - seed-simpledemo-project
+  - define_derived_vars
+  - add_container_provider
+  - add_operator_user
 
   pre_tasks:
     - name: Verify Ansible Version

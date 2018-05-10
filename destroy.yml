@@ -1,6 +1,6 @@
 ---
 
-- name: Provision simpledemo
+- name: Destroy simpledemo
   connection: local
   gather_facts: no
   hosts: localhost
@@ -9,7 +9,7 @@
     - vars/liveuser.yml
 
   roles:
-  - seed-simpledemo-project
+  - down-simpledemo-project
 
   pre_tasks:
     - name: Verify Ansible Version
