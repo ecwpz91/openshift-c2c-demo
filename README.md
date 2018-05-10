@@ -29,13 +29,13 @@ Note that some specific versions of Ansible will not work due to bugs, here is a
 ## Run
 
 ```sh
-./playbook-run.sh -e openshift_master_cluster_public_hostname=xxxxx -e openshift_master_api_port=xxxxx
+./playbook-run.sh
 ```
 
-OR
+<!-- OR
 
 ```sh
 ./playbook-run.sh -e openshift_management_public_route=xxxxx -e openshift_master_cluster_public_hostname=xxxxx -e openshift_master_api_port=xxxxx
-```
+``` -->
 
 Note the above is just an example, please update all variables including the pool name which is correct for your situation.
