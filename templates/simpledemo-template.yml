@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: simpledemo-app
+  name: simpledemo
 objects:
 - apiVersion: v1
   kind: ImageStream

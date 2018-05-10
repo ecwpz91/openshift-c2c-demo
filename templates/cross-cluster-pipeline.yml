@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: BuildConfig
 metadata:
-  name: simpledemo-app-cross-pipeline
+  name: simpledemo-cross-pipeline
   namespace:
   labels:
-    name: simpledemo-app-cross-pipeline
+    name: simpledemo-cross-pipeline
   annotations:
-    pipeline.alpha.openshift.io/uses: '[{"name": "simpledemo-app", "namespace": "simpledemo-app-dev", "kind": "DeploymentConfig"}]'
+    pipeline.alpha.openshift.io/uses: '[{"name": "simpledemo", "namespace": "simpledemo-dev", "kind": "DeploymentConfig"}]'
 spec:
   triggers:
     -
@@ -32,12 +32,12 @@ spec:
             label 'jenkins-slave-image-mgmt'
           }
           parameters {
-            string(name: 'APP_NAME', defaultValue: 'simpledemo-app', description: "Application Name - all resources use this name as a label")
-            string(name: 'DEV_PROJECT', defaultValue: 'simpledemo-app-dev', description: "Name of the Source Namespace")
+            string(name: 'APP_NAME', defaultValue: 'simpledemo', description: "Application Name - all resources use this name as a label")
+            string(name: 'DEV_PROJECT', defaultValue: 'simpledemo-dev', description: "Name of the Source Namespace")
             string(name: 'DEV_TAG', defaultValue: 'latest', description: "Source Tag")
             string(name: 'DEV_REGISTRY', defaultValue: 'docker://docker-registry.default.svc:5000', description: "Development Image Registry")
 
-            string(name: 'TEST_PROJECT', defaultValue: 'simpledemo-app-test', description: "Name of the Destination Namespace")
+            string(name: 'TEST_PROJECT', defaultValue: 'simpledemo-test', description: "Name of the Destination Namespace")
             string(name: 'TEST_TAG', defaultValue: 'latest', description: "Destination Tag")
             string(name: 'TEST_REGISTRY', defaultValue: 'docker://docker-registry-default.apps.ocplab.com', description: "Test Image Registry")
           }
