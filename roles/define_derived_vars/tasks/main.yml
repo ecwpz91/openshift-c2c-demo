@@ -2,7 +2,7 @@
 # here allows them to be managed centrally.
 ---
 - name: Set ocp cluster
-  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
+  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
 
 - name: Get the management SA Secrets are read
   shell: "oc sa get-token -n management-infra management-admin"
