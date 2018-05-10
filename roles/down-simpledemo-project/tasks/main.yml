@@ -1,0 +1,14 @@
+---
+- name: Set dev cluster
+  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
+
+- name: Delete the simpledemo template
+  shell: "oc delete template simpledemo -n openshift"
+  ignore_errors: yes
+
+- name: Delete simpledemo project
+  shell: oc delete project simpledemo
+  ignore_errors: yes
+
+- name: Logout of '{{ openshift_master_cluster_public_hostname }}'
+  shell: "oc logout"
