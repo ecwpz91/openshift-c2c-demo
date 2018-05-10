@@ -1,6 +1,7 @@
+# down-simpledemo-project/tasks/main.yml
 ---
 - name: Set dev cluster
-  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
+  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} --insecure-skip-tls-verify=false --username={{ openshift_cluster_admin_username }} --password={{ openshift_cluster_admin_password }}"
 
 - name: Delete the simpledemo template
   shell: "oc delete template simpledemo -n openshift"
