@@ -6,8 +6,13 @@
   shell: "oc delete template simpledemo -n openshift"
   ignore_errors: yes
 
+- name: Delete all resources
+  shell: oc delete all --all -n simpledemo
+  ignore_errors: yes
+
 - name: Delete simpledemo project
   shell: oc delete project simpledemo
+  when: "{{ delete_project | default('false') }}"
   ignore_errors: yes
 
 - name: Logout of '{{ openshift_master_cluster_public_hostname }}'
