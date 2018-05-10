@@ -1,5 +1,7 @@
 # [Red Hat OpenShift Container Platform in Microsoft Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-get-started)
 
+This is an Azure Resource Manager template that provisions a HA OpenShift environment (1-5 master, 1-3 infra, and 1-30 app node) that is suitable for demos, POCs and small workshops.
+
 ## Setup/Config
 
 The following requires Azure CLI 2.0.8 or later. You can verify the CLI version with the `az --version` command. To update the CLI version, see [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest&viewFallbackFrom=azure-cli-latesti).
