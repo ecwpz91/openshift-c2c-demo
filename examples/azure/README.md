@@ -23,7 +23,7 @@ az group create --name keyvaultrg --location eastus
 az keyvault create --resource-group keyvaultrg --name changeme --enabled-for-template-deployment true --location eastus
 ```
 
- **Notice** the name for the keyvault is _globally unique_ to Azure.
+ **Notice** the name for the keyvault must be _globally unique_ to Azure.
 
 4. [Create an SSH key](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/openshift-prerequisites#create-an-ssh-key)
 ```sh
