@@ -1,21 +1,9 @@
-openshift_master_cluster_public_hostname: ""
-openshift_master_api_port: ""
-openshift_cluster_admin_username: ""
-openshift_cluster_admin_password: ""
-openshift_management_public_route: ""
+openshift_management_public_route:
 
-dev_cluster_public_hostname: ""
-dev_cluster_port: ""
-dev_cluster_admin_username: ""
-dev_cluster_admin_password: ""
+openshift_master_cluster_public_hostname:
 
-test_cluster_public_hostname: ""
-test_cluster_port: ""
-test_cluster_admin_username: ""
-test_cluster_admin_password: ""
+openshift_cluster_admin_username:
+openshift_cluster_admin_password:
 
-# management_admin_username: "admin"   # default CFME admin username
-# management_admin_password: "smartvm" # default CFME admin password
-
-# management_username: "devops"  # default CFME username
-# management_password: "smartvm"  # default CFME password
+openshift_cluster_username:
+openshift_cluster_password:
