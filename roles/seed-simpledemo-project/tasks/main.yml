@@ -1,14 +1,14 @@
 # seed-simpledemo-project/tasks/main.yml
 ---
 - name: Set admin login
-  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} --insecure-skip-tls-verify=false --username={{ openshift_cluster_admin_username }} --password={{ openshift_cluster_admin_password }}"
+  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} --insecure-skip-tls-verify=true --username={{ openshift_cluster_admin_username }} --password={{ openshift_cluster_admin_password }}"
 
 - name: Create the simpledemo template
   shell: "oc create -f https://raw.githubusercontent.com/ecwpz91/openshift-c2c-demo/master/templates/simpledemo-template.yml -n openshift"
   ignore_errors: yes
 
 - name: Set user login
-  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} --insecure-skip-tls-verify=false --username={{ openshift_cluster_username }} --password={{ openshift_cluster_password }}"
+  shell: "oc login {{ openshift_master_cluster_public_hostname }}:{{ openshift_master_api_port | default('8443') }} --insecure-skip-tls-verify=true --username={{ openshift_cluster_username }} --password={{ openshift_cluster_password }}"
 
 - name: Create the simpledemo project
   shell: "oc new-project simpledemo --display-name='Simple Demo'"
