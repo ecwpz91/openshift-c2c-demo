@@ -3,7 +3,7 @@
   shell: "oc login {{ test_cluster_public_hostname }}:{{ test_cluster_port }} -u {{ test_cluster_username }} -p {{ test_cluster_password }}"
 
 - name: Create a CI/CD project
-  shell: oc delete project product-catalog-test
+  shell: oc delete project simpledemo-app-test
 
 - name: Logout of cluster
   shell: "oc logout"
