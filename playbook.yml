@@ -12,10 +12,8 @@
   - define_derived_vars
   - add_container_provider
   - add_operator_user
-  - setup-dev-cluster
-  - setup-test-cluster
-  - teardown-dev-cluster
-  - teardown-test-cluster
+  - seed-simpledemo-project
+  # - down-simpledemo-project
 
   pre_tasks:
     - name: Verify Ansible Version
