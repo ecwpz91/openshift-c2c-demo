@@ -4,7 +4,7 @@
   shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ dev_cluster_username }} -p {{ dev_cluster_password }}"
 
 - name: Create a CI/CD project
-  shell: oc new-project simpledemo-cicd --display-name='CI/CD'
+  shell: oc new-project simpledemo-cicd --display-name='Simple Demo CI/CD'
 
 - name: Create the jenkins-image-management image
   shell: oc process -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/jenkins-slaves/templates/jenkins-slave-image-mgmt-template.yml | oc apply -f-

@@ -2,20 +2,20 @@
 - name: Set dev cluster
   shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ dev_cluster_username }} -p {{ dev_cluster_password }}"
 
-- name: Create a CI/CD project
+- name: Delete CI/CD project
+  shell: oc delete project simpledemo-cicd
+
+- name: Delete dev project
   shell: oc delete project simpledemo-dev
 
 - name: Set cluster admin
   shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ openshift_cluster_admin_username }} -p {{ openshift_cluster_admin_password }}"
 
 - name: Create the openshift template persistent
-  shell: "oc delete template simpledemo-persistent -n openshift"
+  shell: "oc delete template simpledemo -n openshift"
 
 - name: Set dev cluster
   shell: "oc login {{ dev_cluster_public_hostname }}:{{ dev_cluster_port }} -u {{ dev_cluster_username }} -p {{ dev_cluster_password }}"
-
-- name: Delete CI/CD project
-  shell: oc delete project simpledemo-cicd
 
 - name: Logout of cluster
   shell: "oc logout"
